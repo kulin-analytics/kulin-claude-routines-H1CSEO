@@ -1,6 +1,17 @@
 ---
 name: seo-feedback-handoff
-description: "Turns the open client comments on a client's SEO article page in Notion into a partner-ready feedback handoff PDF (article rendered with each open comment anchored to its passage and color-coded by type), saves it to the client's handoff Drive folder, and posts a Slack alert with the link. Trigger whenever the user asks to 'build the SEO feedback handoff,' 'consolidate the comments for [article],' 'package the client feedback for the SEO partner,' 'HC1 feedback handoff for an article,' or any variation of turning Notion review comments into a handoff for an outside SEO/content partner. Also the logic invoked by the HC1 scheduled feedback-handoff task. Scoped per client; defaults to HC1 (Home Carpet One). Does NOT create the article page (that is the seo-article-builder skill) and does NOT email the partner."
+description: >-
+  Turns the open client comments on a client's SEO article page in Notion into a
+  partner-ready feedback handoff PDF (article rendered with each open comment anchored
+  to its passage and color-coded by type), saves it to the client's handoff Drive
+  folder, and posts a Slack alert with the link. Trigger whenever the user asks to
+  "build the SEO feedback handoff," "consolidate the comments for [article],"
+  "package the client feedback for the SEO partner," "HC1 feedback handoff for an
+  article," or any variation of turning Notion review comments into a handoff for an
+  outside SEO/content partner. Also the logic invoked by the HC1 scheduled
+  feedback-handoff task. Scoped per client; defaults to HC1 (Home Carpet One). Does
+  NOT create the article page (that is the seo-article-builder skill) and does NOT
+  email the partner.
 ---
 
 # SEO Feedback Handoff
@@ -21,11 +32,11 @@ Default client is **HC1 (Home Carpet One)**.
 | Setting | HC1 value |
 |---|---|
 | Articles database | `HC1 SEO Articles` (inside the `HC1 SEO Project Status` pipeline page) |
-| Slack destination | `#01-seo-projects` |
-| Slack mention | `@chloe` (Chloe, `U035DF368J0`) |
+| Slack destination | `#01-hc1-seo` (`C0BA36LTQEB`) |
+| Slack mention | `@olivia` (Olivia White, `U08T5AUND8A`) |
 | Handoff Drive folder | `https://drive.google.com/drive/u/0/folders/1rkk5Mf0eojkQ1ouLgewy4-i6D81FNnPi` |
 
-Resolve the database fresh by name every run (the pipeline is still in internal testing and IDs change); never hardcode IDs. For other clients, swap these four values.
+Resolve the database fresh by name every run (Notion can reassign IDs when pages are duplicated or moved); never hardcode IDs. For other clients, swap these four values.
 
 ## Step-by-Step Workflow
 
@@ -46,7 +57,7 @@ Tag each open comment as exactly one of:
 When ambiguous, default to REVISION REQUEST (the safer "needs action" bucket).
 
 ### 4. Decide whether a handoff is needed (dedup)
-Search `#01-seo-projects` for the most recent prior handoff message about this exact article.
+Search `#01-hc1-seo` for the most recent prior handoff message about this exact article.
 - Build a handoff if there is no prior message, OR if at least one open comment was created after the most recent prior handoff message (a new review round).
 - If Status is "Approved" with zero open comments and a prior approval message already exists, skip.
 - Otherwise skip - already handed off, nothing new.
@@ -67,7 +78,7 @@ Special case - "Approved" with zero open comments: skip the PDF and go to step 7
 Upload the PDF to the client's handoff Drive folder (HC1: the folder above). Capture the shareable link. Note: this skill cannot change the folder's sharing settings - the folder must already be shared so the link resolves for the PM and partner.
 
 ### 7. Post the Slack alert
-Post to the client's Slack destination (`#01-seo-projects` for HC1) in exactly this format:
+Post to the client's Slack destination (`#01-hc1-seo` for HC1) in exactly this format:
 ```
 SEO article ready for next step: <Article Name>
 Status: <status value>
